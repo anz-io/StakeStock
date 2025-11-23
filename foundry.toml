@@ -5,7 +5,7 @@ libs = ["lib"]
 
 remappings = [
     "metamorpho-v1.1/=lib/metamorpho-v1.1/src/",
-    "morpho-blue/=lib/metamorpho-v1.1/lib/morpho-blue/",
+    "morpho-blue/=lib/metamorpho-v1.1/lib/morpho-blue/src/",
     "openzeppelin-contracts/=lib/metamorpho-v1.1/lib/openzeppelin-contracts/",
     "forge-std/=lib/forge-std/src/"
 ]
