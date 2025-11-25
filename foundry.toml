@@ -2,6 +2,12 @@
 src = "src"
 out = "out"
 libs = ["lib"]
+optimizer = true
+optimizer_runs = 200
+via_ir = true
+bytecode_hash = "none"
+evm_version = "cancun"
+ignore_eip_3860 = false
 
 remappings = [
     "metamorpho-v1.1/=lib/metamorpho-v1.1/src/",
@@ -9,5 +15,15 @@ remappings = [
     "openzeppelin-contracts/=lib/metamorpho-v1.1/lib/openzeppelin-contracts/",
     "forge-std/=lib/forge-std/src/"
 ]
+
+# RPC endpoints
+[rpc_endpoints]
+sepolia = "${RPC_SEPOLIA}"
+bsc = "${RPC_BSC}"
+
+# Etherscan API keys
+[etherscan]
+sepolia = { key = "${API_ETHERSCAN}" }
+bsc = { key = "${API_ETHERSCAN}" }
 
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options

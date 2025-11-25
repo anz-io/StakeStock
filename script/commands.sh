@@ -1,0 +1,7 @@
+source .env
+forge script script/DeployInfrastructure.s.sol:DeployInfrastructure \
+  --rpc-url sepolia \
+  --private-key $PK_ADMIN \
+  --broadcast \
+  --verify \
+  -vvvv
