@@ -7,7 +7,6 @@ optimizer_runs = 200
 via_ir = true
 bytecode_hash = "none"
 evm_version = "cancun"
-ignore_eip_3860 = false
 
 remappings = [
     "metamorpho-v1.1/=lib/metamorpho-v1.1/src/",
