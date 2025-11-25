@@ -36,3 +36,19 @@ source .env && forge script script/CreateVault.s.sol:CreateVault \
   --private-key $PK_ADMIN \
   --broadcast \
   -vv
+
+# Interactive: Supply USDC to a market (admin)
+source .env && forge script script/SupplyToMarket.s.sol:SupplyToMarket \
+  --rpc-url sepolia \
+  --private-key $PK_ADMIN \
+  --broadcast \
+  -vv
+
+# Interactive: Supply collateral and borrow (user)
+source .env && forge script script/SupplyCollateralAndBorrow.s.sol:SupplyCollateralAndBorrow \
+  --rpc-url sepolia \
+  --private-key $PK_USER \
+  --broadcast \
+  -vv
+
+# 1 ether: 1000000000000000000
