@@ -6,24 +6,62 @@ import {MockToken} from "../src/mocks/MockToken.sol";
 import {MockOracle} from "../src/mocks/MockOracle.sol";
 
 contract DeployMocks is Script {
+    // RWA Token definitions
+    struct RWAToken {
+        string name;
+        string symbol;
+        uint256 priceInUSDC; // Price in USDC (6 decimals), e.g., 275 = $275
+    }
+
     function run() external {
+        // Define RWA tokens
+        RWAToken[3] memory rwaTokens = [
+            RWAToken("StakeStock Apple", "sAAPL", 275),
+            RWAToken("StakeStock Amazon", "sAMZN", 226),
+            RWAToken("StakeStock Google", "sGOOG", 318)
+        ];
+
         vm.startBroadcast();
 
-        // 1. Deploy Mock Token (RWA Stock)
-        string memory name = vm.envOr("TOKEN_NAME", string("StakeStock Apple"));
-        string memory symbol = vm.envOr("TOKEN_SYMBOL", string("sAAPL"));
-        
-        MockToken stock = new MockToken(name, symbol);
-        console.log("Mock Stock deployed at:", address(stock));
+        console.log("=== Deploying RWA Tokens and Oracles ===");
+        console.log("");
 
-        // 2. Deploy Mock Oracle
-        // Default: 100 * 1e36 (Morpho Blue price scale)
-        uint256 defaultPrice = 100e36;
-        uint256 initialPrice = vm.envOr("INITIAL_PRICE", defaultPrice);
-        
-        MockOracle oracle = new MockOracle(initialPrice);
-        console.log("Mock Oracle deployed at:", address(oracle));
+        // Deploy each RWA token and its oracle
+        for (uint256 i = 0; i < rwaTokens.length; i++) {
+            RWAToken memory rwa = rwaTokens[i];
+            
+            // Deploy RWA token (18 decimals)
+            MockToken token = new MockToken(rwa.name, rwa.symbol, 18);
+            console.log(string.concat(rwa.symbol, " deployed at:"), address(token));
+
+            // Calculate oracle price
+            // Oracle price format: (collateral value / loan value) * 1e36
+            // For 1 sAAPL (18 decimals) = 275 USDC (6 decimals)
+            // Price = (275e6 / 1e18) * 1e36 = 275e24
+            uint256 oraclePrice = rwa.priceInUSDC * 1e24;
+            
+            MockOracle oracle = new MockOracle(oraclePrice);
+            console.log(string.concat(rwa.symbol, " Oracle deployed at:"), address(oracle));
+            console.log(string.concat(rwa.symbol, " Price: $"), rwa.priceInUSDC);
+            console.log("");
+        }
+
+        // Deploy Mock USDC (6 decimals)
+        console.log("=== Deploying Mock USDC ===");
+        MockToken mUSDC = new MockToken("Mock USDC", "mUSDC", 6);
+        console.log("mUSDC deployed at:", address(mUSDC));
+
+        // Mint 1,000,000 USDC to deployer (6 decimals)
+        uint256 mintAmount = 1_000_000 * 1e6;
+        mUSDC.mint(msg.sender, mintAmount);
+        console.log("Minted 1,000,000 mUSDC to:", msg.sender);
 
         vm.stopBroadcast();
+
+        console.log("");
+        console.log("=== Deployment Summary ===");
+        console.log("Total RWA tokens deployed:", rwaTokens.length);
+        console.log("Total oracles deployed:", rwaTokens.length);
+        console.log("Mock USDC deployed with 1M initial supply");
     }
 }
