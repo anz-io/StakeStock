@@ -7,18 +7,18 @@ import {MockOracle} from "../src/mocks/MockOracle.sol";
 
 contract DeployMocks is Script {
     // RWA Token definitions
-    struct RWAToken {
+    struct RwaToken {
         string name;
         string symbol;
-        uint256 priceInUSDC; // Price in USDC (6 decimals), e.g., 275 = $275
+        uint256 priceInUsdc; // Price in USDC (6 decimals), e.g., 275 = $275
     }
 
     function run() external {
         // Define RWA tokens
-        RWAToken[3] memory rwaTokens = [
-            RWAToken("StakeStock Apple", "sAAPL", 275),
-            RWAToken("StakeStock Amazon", "sAMZN", 226),
-            RWAToken("StakeStock Google", "sGOOG", 318)
+        RwaToken[3] memory rwaTokens = [
+            RwaToken({ name: "StakeStock Apple", symbol: "sAAPL", priceInUsdc: 275 }),
+            RwaToken({ name: "StakeStock Amazon", symbol: "sAMZN", priceInUsdc: 226 }),
+            RwaToken({ name: "StakeStock Google", symbol: "sGOOG", priceInUsdc: 318 })
         ];
 
         vm.startBroadcast();
@@ -28,7 +28,7 @@ contract DeployMocks is Script {
 
         // Deploy each RWA token and its oracle
         for (uint256 i = 0; i < rwaTokens.length; i++) {
-            RWAToken memory rwa = rwaTokens[i];
+            RwaToken memory rwa = rwaTokens[i];
             
             // Deploy RWA token (18 decimals)
             MockToken token = new MockToken(rwa.name, rwa.symbol, 18);
@@ -38,22 +38,22 @@ contract DeployMocks is Script {
             // Oracle price format: (collateral value / loan value) * 1e36
             // For 1 sAAPL (18 decimals) = 275 USDC (6 decimals)
             // Price = (275e6 / 1e18) * 1e36 = 275e24
-            uint256 oraclePrice = rwa.priceInUSDC * 1e24;
+            uint256 oraclePrice = rwa.priceInUsdc * 1e24;
             
             MockOracle oracle = new MockOracle(oraclePrice);
             console.log(string.concat(rwa.symbol, " Oracle deployed at:"), address(oracle));
-            console.log(string.concat(rwa.symbol, " Price: $"), rwa.priceInUSDC);
+            console.log(string.concat(rwa.symbol, " Price: $"), rwa.priceInUsdc);
             console.log("");
         }
 
         // Deploy Mock USDC (6 decimals)
         console.log("=== Deploying Mock USDC ===");
-        MockToken mUSDC = new MockToken("Mock USDC", "mUSDC", 6);
-        console.log("mUSDC deployed at:", address(mUSDC));
+        MockToken mUsdc = new MockToken("Mock USDC", "mUSDC", 6);
+        console.log("mUSDC deployed at:", address(mUsdc));
 
         // Mint 1,000,000 USDC to deployer (6 decimals)
         uint256 mintAmount = 1_000_000 * 1e6;
-        mUSDC.mint(msg.sender, mintAmount);
+        mUsdc.mint(msg.sender, mintAmount);
         console.log("Minted 1,000,000 mUSDC to:", msg.sender);
 
         vm.stopBroadcast();
