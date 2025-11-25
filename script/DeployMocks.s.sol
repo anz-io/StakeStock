@@ -16,9 +16,9 @@ contract DeployMocks is Script {
     function run() external {
         // Define RWA tokens
         RwaToken[3] memory rwaTokens = [
-            RwaToken({ name: "StakeStock Apple", symbol: "sAAPL", priceInUsdc: 275 }),
-            RwaToken({ name: "StakeStock Amazon", symbol: "sAMZN", priceInUsdc: 226 }),
-            RwaToken({ name: "StakeStock Google", symbol: "sGOOG", priceInUsdc: 318 })
+            RwaToken({name: "StakeStock Apple", symbol: "sAAPL", priceInUsdc: 275}),
+            RwaToken({name: "StakeStock Amazon", symbol: "sAMZN", priceInUsdc: 226}),
+            RwaToken({name: "StakeStock Google", symbol: "sGOOG", priceInUsdc: 318})
         ];
 
         vm.startBroadcast();
@@ -29,7 +29,7 @@ contract DeployMocks is Script {
         // Deploy each RWA token and its oracle
         for (uint256 i = 0; i < rwaTokens.length; i++) {
             RwaToken memory rwa = rwaTokens[i];
-            
+
             // Deploy RWA token (18 decimals)
             MockToken token = new MockToken(rwa.name, rwa.symbol, 18);
             console.log(string.concat(rwa.symbol, " deployed at:"), address(token));
@@ -39,7 +39,7 @@ contract DeployMocks is Script {
             // For 1 sAAPL (18 decimals) = 275 USDC (6 decimals)
             // Price = (275e6 / 1e18) * 1e36 = 275e24
             uint256 oraclePrice = rwa.priceInUsdc * 1e24;
-            
+
             MockOracle oracle = new MockOracle(oraclePrice);
             console.log(string.concat(rwa.symbol, " Oracle deployed at:"), address(oracle));
             console.log(string.concat(rwa.symbol, " Price: $"), rwa.priceInUsdc);

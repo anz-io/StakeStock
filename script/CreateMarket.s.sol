@@ -11,7 +11,7 @@ contract CreateMarket is Script {
         // Load Morpho Blue address from environment
         address morphoAddress = vm.envAddress("SEP_MORPHO_BLUE");
         address irmAddress = vm.envAddress("SEP_ADAPTIVE_IRM");
-        
+
         console.log("=== Create Morpho Blue Market ===");
         console.log("Morpho Blue:", morphoAddress);
         console.log("IRM:", irmAddress);
@@ -22,7 +22,7 @@ contract CreateMarket is Script {
         address loanToken = vm.parseAddress(vm.prompt("Loan Token Address (e.g., mUSDC):"));
         address collateralToken = vm.parseAddress(vm.prompt("Collateral Token Address (e.g., sAAPL):"));
         address oracle = vm.parseAddress(vm.prompt("Oracle Address:"));
-        
+
         // LLTV input (choose from predefined options)
         console.log("Select LLTV option (choose one of: 38, 62, 77, 86, 91, 94, 96, 98)");
         uint256 lltvChoice = vm.parseUint(vm.prompt("LLTV option:"));
@@ -34,7 +34,7 @@ contract CreateMarket is Script {
             // whole percentages (e.g., 77% -> 0.77e18)
             lltv = lltvChoice * 1e16;
         }
-        
+
         console.log("");
         console.log("=== Market Parameters ===");
         console.log("Loan Token:", loanToken);
@@ -46,24 +46,17 @@ contract CreateMarket is Script {
 
         // Confirm
         string memory confirm = vm.prompt("Create this market? (yes/no):");
-        require(
-            keccak256(bytes(confirm)) == keccak256(bytes("yes")),
-            "Market creation cancelled"
-        );
+        require(keccak256(bytes(confirm)) == keccak256(bytes("yes")), "Market creation cancelled");
 
         // Create market params
         MarketParams memory marketParams = MarketParams({
-            loanToken: loanToken,
-            collateralToken: collateralToken,
-            oracle: oracle,
-            irm: irmAddress,
-            lltv: lltv
+            loanToken: loanToken, collateralToken: collateralToken, oracle: oracle, irm: irmAddress, lltv: lltv
         });
 
         vm.startBroadcast();
 
         IMorpho morpho = IMorpho(morphoAddress);
-        
+
         // Check if LLTV is enabled
         if (!morpho.isLltvEnabled(lltv)) {
             console.log("WARNING: LLTV not enabled. You need to enable it first (requires owner).");
@@ -74,10 +67,10 @@ contract CreateMarket is Script {
 
         // Create market
         morpho.createMarket(marketParams);
-        
+
         console.log("");
         console.log("=== Market Created Successfully! ===");
-        
+
         vm.stopBroadcast();
     }
 }
