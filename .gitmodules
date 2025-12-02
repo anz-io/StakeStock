@@ -4,3 +4,6 @@
 [submodule "lib/metamorpho-v1.1"]
 	path = lib/metamorpho-v1.1
 	url = https://github.com/morpho-org/metamorpho-v1.1
+[submodule "lib/stakestock-morpho-blue"]
+	path = lib/stakestock-morpho-blue
+	url = https://github.com/anz-io/stakestock-morpho-blue
