@@ -12,7 +12,7 @@ Foundry-based smart contract project for deploying and managing Morpho Blue mark
 1.  **Clone the repository:**
     ```bash
     git clone <repo-url>
-    cd T-StakeStock
+    cd <repo-name>
     ```
 
 2.  **Install dependencies:**
